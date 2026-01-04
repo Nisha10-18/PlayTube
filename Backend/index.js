@@ -7,6 +7,10 @@ import cookieParser from "cookie-parser";
 import cors from "cors"
 import contentRouter from "./route/contentRoute.js";
 dotenv.config(); //to use env file
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
+
 const port = process.env.PORT; //to get env data
 
 const app = express();
