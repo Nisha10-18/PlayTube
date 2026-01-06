@@ -15,7 +15,7 @@ app.use(cookieParser())
 app.use(express.json())
 
 app.use(cors({
-  origin:"https://playtube-7wpt.onrender.com",
+  origin:"https://playtube-frontend-41pa.onrender.com",
   credentials:true
 }))
 //Creating API
