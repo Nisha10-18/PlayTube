@@ -16,7 +16,7 @@ import UpdateChannel from "./Pages/Channel/UpdateChannel";
 import CreatePage from "./Pages/CreatePage";
 import CreateVideo from "./Pages/Videos/CreateVideo";
 import CreateShort from "./Pages/Shorts/CreateShort";
-import CreatePlayList from "./Pages/PlayList/CreatePlayList";
+import CreatePlayList from "./Pages/Playlist/CreatePlayList";
 import CreatePost from "./Pages/Post/CreatePost";
 import GetAllContentData from "./customHooks/GetAllContentData";
 import PlayVideo from "./Pages/Videos/PlayVideo";
