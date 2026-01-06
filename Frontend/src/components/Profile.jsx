@@ -78,7 +78,7 @@ function Profile() {
         <div className='flex flex-col py-2'>
           <button className='flex items-center gap-3 px-4 py-2 hover:bg-gray-700' onClick=
           {handleGoogleAuth}>
-            <FcGoogle className='text-xl'/>SignIn with google account
+            <FcGoogle className='text-xl'/>Sign in with google account
           </button>
 
           <button className='flex items-center gap-3 px-4 py-2 hover:bg-gray-700'
