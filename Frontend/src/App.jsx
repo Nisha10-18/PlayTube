@@ -24,7 +24,7 @@ import ChannelPage from "./Pages/Channel/ChannelPage";
 import PlayShort from "./Pages/Shorts/PlayShort";
 import LikedContent from "./Pages/LikedContent";
 import SavedContent from "./Pages/SavedContent";
-import SavedPlaylist from "./Pages/PlayList/SavedPlaylist";
+import SavedPlaylist from "./Pages/Playlist/SavedPlaylist";
 import GetSubscribedData from "./customHooks/GetSubscribedData";
 import Subscription from "./Pages/Subscription";
 import GetHistory from "./customHooks/GetHistory";
