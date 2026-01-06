@@ -71,7 +71,7 @@ function Profile() {
                 <p className='text-sm text-gray-400'>{userData?.email}</p>
                 <p className='text-sm text-blue-400 cursor-pointer hover:underline'
                 onClick={()=>{userData?.channel ? navigate("/viewchannel") :navigate("/createchannel")}}>
-                    {userData?.channel ? "view channel" : "Create Channel"}
+                    {userData?.channel ? "" : "Create Channel"}
                 </p>
             </div>
         </div>}
@@ -88,7 +88,7 @@ function Profile() {
 
           <button className='flex items-center gap-3 px-4 py-2 hover:bg-gray-700'
           onClick={()=>navigate("/signin")}>
-            <MdOutlineSwitchAccount className='text-xl'/>SignIn with other account
+            <MdOutlineSwitchAccount className='text-xl'/>Sign in with other account
           </button>
 
          {userData?.channel && (
