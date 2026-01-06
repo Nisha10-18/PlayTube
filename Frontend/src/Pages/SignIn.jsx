@@ -73,7 +73,7 @@ function SignIn() {
           <>
             <h1 className="text-3xl text-white mb-5 flex items-center gap-2">
               <img src={logo} alt="logo" className="w-8 h-8" />
-              SignIn
+              Signin
             </h1>
 
             <input
