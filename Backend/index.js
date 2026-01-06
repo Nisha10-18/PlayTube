@@ -11,6 +11,8 @@ dotenv.config(); //to use env file
 const PORT = process.env.PORT; //to get env data
 
 const app = express();
+app.set("trust proxy", 1);
+
 app.use(cookieParser())
 app.use(express.json())
 
