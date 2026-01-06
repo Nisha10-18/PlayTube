@@ -43,7 +43,7 @@ import UpdatePlaylist from "./Pages/Playlist/UpdatePlaylist";
 
 
 
-export const serverUrl = "http://localhost:8000";
+export const serverUrl = "https://playtube-7wpt.onrender.com";
 
 /* ================= PROTECTED ROUTE ================= */
 const ProtectRoute = ({ userData, children }) => {
