@@ -8,7 +8,7 @@ import cors from "cors"
 import contentRouter from "./route/contentRoute.js";
 dotenv.config(); //to use env file
 
-const port = process.env.PORT; //to get env data
+const PORT = process.env.PORT; //to get env data
 
 const app = express();
 app.use(cookieParser())
@@ -23,7 +23,12 @@ app.use("/api/auth",authRouter)
 app.use("/api/user",userRouter)
 app.use("/api/content",contentRouter)
 
-app.listen(port, () => {
+app.get("/", (req, res) => {
+  res.send("Backend working on Render 🚀");
+});
+
+
+app.listen(PORT, () => {
   console.log("Server Started");
   connectDb();
 });
