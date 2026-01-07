@@ -1,5 +1,4 @@
-// import React from "react";
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FiLogOut } from "react-icons/fi";
 import { MdOutlineSwitchAccount } from "react-icons/md";
@@ -12,13 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { setUserData } from "../redux/userSlice";
 import axios from "axios";
 import { serverUrl } from "../App";
-//import { signInWithPopup } from "firebase/auth";
-import {
-  signInWithRedirect,
-  getRedirectResult
-} from "firebase/auth";
-
-
+import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../../utils/firebase";
 import { showCustomAlert } from "./CustomAlert"; 
 
@@ -41,22 +34,9 @@ function MobileProfile() {
     }
   };
 
-const handleGoogleAuth = async () => {
-  try {
-    await signInWithRedirect(auth, provider);
-  } catch (error) {
-    console.log(error);
-    showCustomAlert("Google Auth error");
-  }
-};
-
-useEffect(() => {
-  const handleRedirectResult = async () => {
+  const handleGoogleAuth = async () => {
     try {
-      const response = await getRedirectResult(auth);
-
-      if (!response) return;
-
+      const response = await signInWithPopup(auth, provider);
       const user = response.user;
 
       const formData = new FormData();
@@ -78,10 +58,6 @@ useEffect(() => {
     }
   };
 
-  handleRedirectResult();
-}, []);
-
-
   return (
     <div className="md:hidden bg-[#0f0f0f] text-white h-full w-full flex flex-col pt-[100px] p-[10px]">
       {userData && (
@@ -95,7 +71,7 @@ useEffect(() => {
             <span className="font-semibold text-lg">{userData.userName}</span>
             <span className="text-gray-400 text-sm">{userData.email}</span>
             <p className="text-sm text-blue-400 cursor-pointer hover:underline" onClick={()=>{userData?.channel ? navigate("/viewchannel") :navigate("/createchannel")}}>
-              {userData.channel ? "View Channel" : "Create Channel"}
+              {userData.channel ? "View channel" : "Create Channel"}
             </p>
           </div>
         </div>
