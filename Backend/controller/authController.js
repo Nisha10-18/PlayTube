@@ -132,53 +132,52 @@ export const signOut = async (req, res) => {
 };
 
 
-export const googleAuth = async (req,res) => {
-  try{
-  const {userName, email,photoUrl} = req.body
-  let googlePhoto = photoUrl
+export const googleAuth = async (req, res) => {
+  try {
+    const { userName, email, photoUrl } = req.body;
+    let googlePhoto = photoUrl;
 
-  if(photoUrl){
-    try{
-      googlePhoto = await uploadOnCloudinary(photoUrl)
-
-    }catch(error){
-      console.log("Cloudinary upload failed")
-    }
-  }
-
-  const user = await User.findOne({email})
-    if(!user){
-      await User.create({
-        userName,
-        email,
-        photoUrl:googlePhoto
-      })
-    }else{
-      if(!user.photoUrl && googlePhoto){
-        user.photoUrl = googlePhoto;
-        await user.save()
+    if (photoUrl) {
+      try {
+        googlePhoto = await uploadOnCloudinary(photoUrl);
+      } catch (error) {
+        console.log("Cloudinary upload failed");
       }
     }
 
-     let token = await genToken(user?._id);
+    let user = await User.findOne({ email });   // ✅ let (not const)
+
+    if (!user) {
+      user = await User.create({               // ✅ save into user
+        userName,
+        email,
+        photoUrl: googlePhoto,
+      });
+    } else {
+      if (!user.photoUrl && googlePhoto) {
+        user.photoUrl = googlePhoto;
+        await user.save();
+      }
+    }
+
+    let token = await genToken(user._id);       // ✅ always valid
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "None", // 🔥 FIXED
+      sameSite: "None",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    
     return res.status(201).json(user);
 
-  }catch(error) {
-    return res.status(500)
-      .json({ message: `GoogleAuth: error${error}` });
-
+  } catch (error) {
+    return res.status(500).json({
+      message: `GoogleAuth error: ${error.message}`,
+    });
   }
+};
 
-}
 
 
 export const sendOtp = async(req,res) => {
@@ -190,7 +189,7 @@ export const sendOtp = async(req,res) => {
    }
    const otp = await Math.floor(1000 + Math.random()*9000).toString()
    user.resetOtp = otp
-   user.otpExpires = Date.now() + 5*6*1000,
+   user.otpExpires = Date.now() + 5 * 60 * 1000,
    user.isOtpVerified = false
 
    await user.save()
