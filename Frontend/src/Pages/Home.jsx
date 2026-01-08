@@ -303,7 +303,7 @@ const handleCategoryFilter = async (category) => {
           </div>
 
           {/* Search */}
-          <div className="hidden md:flex items-center gap-2 flex-1 max-w-xl mx-4">
+          <div className="md:flex items-center gap-2 flex-1 max-w-xl mx-4">
             <div className="flex flex-1">
               <input
                 type="text"
