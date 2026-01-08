@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import create from "../../assets/create.png"
 import { useNavigate } from "react-router-dom";
 
+
 function ViewChannel() {
   const {channelData} = useSelector((state) => state.user);
   const navigate = useNavigate()
@@ -57,7 +58,8 @@ function ViewChannel() {
             onClick={()=>navigate("/updatechannel")}>
               Customize channel
             </button>
-<button className="bg-[#272727] px-4 py-1 rounded-full font-medium active:bg-gray-200 active:text-black cursor-pointer" onClick={()=>navigate("/ptstudio/dashboard")}> 
+
+            <button className="bg-[#272727] px-4 py-1 rounded-full font-medium active:bg-gray-200 active:text-black cursor-pointer" onClick={()=>navigate("/ptstudio/dashboard")}> {/*changes */}
               Manage Videos
             </button>
           </div>
