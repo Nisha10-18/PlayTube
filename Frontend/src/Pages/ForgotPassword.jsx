@@ -27,9 +27,12 @@ const ForgotPassword = () => {
       setStep(2)
       showCustomAlert(result.data.message)
     } catch (error) {
-      console.log(error)
-      showCustomAlert("Send OTP error")
-    } finally {
+  console.error(error?.response?.data || error.message)
+  showCustomAlert(
+    error?.response?.data?.message || "Send OTP error"
+  )
+}
+ finally {
       setLoading(false)
     }
   }
