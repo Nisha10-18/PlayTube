@@ -283,10 +283,10 @@ const handleCategoryFilter = async (category) => {
 
       {/* Navbar */}
       <header
-        className="bg-[#0f0f0f] h-[60px] p-3 border-b border-gray-800 fixed top-0 left-0 right-0 z-50 
+        className="bg-[#0f0f0f] h-[60px] p-3 border-b border-gray-800 fixed top-0 left-0 right-0 z-50
       "
       >
-        <div className="hidden flex items-center justify-between h-full">
+        <div className="flex items-center justify-between h-full">
           {/* Left */}
           <div className="flex items-center gap-4">
             <button
@@ -303,8 +303,7 @@ const handleCategoryFilter = async (category) => {
           </div>
 
           {/* Search */}
-          <div className="md:flex items-center gap-2 flex-1 max-w-xl mx-4 flex-nowrap">
-
+          <div className="md:flex items-center gap-2 flex-1 max-w-xl mx-4">
             <div className="flex flex-1">
               <input
                 type="text"
@@ -358,7 +357,10 @@ const handleCategoryFilter = async (category) => {
               />
             )}
 
-
+           <FaSearch
+  className="text-lg md:hidden flex cursor-pointer"
+  onClick={() => setSearchPopup(true)}
+/>
 
           </div>
         </div>
@@ -487,10 +489,10 @@ const handleCategoryFilter = async (category) => {
       </aside>
 
       {/* Main Area */}
-   <main
-        className={`overflow-y-auto p-4 flex flex-col pb-16 transition-all duration-300
-        ${sidebarOpen ? "md:ml-60" : "md:ml-20"}`}
-      >
+    <main
+  className={`overflow-y-auto p-4 flex flex-col pb-16 pt-[60px] md:pt-0 transition-all duration-300
+  ${sidebarOpen ? "md:ml-60" : "md:ml-20"}`}
+>
         {location.pathname === "/" && (
           <>
             <div className="flex items-center gap-3 overflow-x-auto pt-2 mt-[60px]">
