@@ -7,6 +7,7 @@ import Playlist from "../model/playlistModel.js";
 
 dotenv.config();
 
+/* ================= SEARCH WITH AI ================= */
 export const searchWithAi = async (req, res) => {
   try {
     const { input } = req.body;
@@ -15,7 +16,6 @@ export const searchWithAi = async (req, res) => {
       return res.status(400).json({ message: "Search query is required" });
     }
 
-    // STEP 1: AI keyword extraction
     const ai = new GoogleGenAI({
       apiKey: process.env.GEMINI_API_KEY,
     });
@@ -23,11 +23,9 @@ export const searchWithAi = async (req, res) => {
     const prompt = `
 You are a search assistant for a video streaming platform.
 The user query is: "${input}"
-Your job:
-- If the query has typos, correct them.
-- If the query has multiple words, break them into meaningful keywords.
-- Return only the corrected word(s), comma-separated.
-- Do not explain, only return keyword(s).
+- Fix typos
+- Extract meaningful keywords
+- Return only comma-separated keywords
     `;
 
     const response = await ai.models.generateContent({
@@ -35,55 +33,57 @@ Your job:
       contents: prompt,
     });
 
-  
-    let keyword = (
-      response.text || input
-    )
-      .trim()
-      .replace(/[\n\r]+/g, "");
+    // ✅ FIX 1: Render-safe Gemini response
+    const aiText =
+      response?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    let keyword =
+      aiText && aiText.trim().length > 0
+        ? aiText.trim().replace(/[\n\r]+/g, "")
+        : input;
 
     const searchWords = keyword
       .split(",")
       .map((w) => w.trim())
       .filter(Boolean);
 
-    // Helper function to build regex OR query
-    const buildRegexQuery = (fields) => {
-      return {
-        $or: searchWords.map((word) => ({
-          $or: fields.map((field) => ({
-            [field]: { $regex: word, $options: "i" },
-          })),
-        })),
-      };
-    };
+    // ✅ FIX 2: Correct Mongo regex query
+    const buildRegexQuery = (fields) => ({
+      $or: searchWords.flatMap((word) =>
+        fields.map((field) => ({
+          [field]: { $regex: word, $options: "i" },
+        }))
+      ),
+    });
 
-    // STEP 2: Channels
+    /* ================= CHANNELS ================= */
     const matchedChannels = await Channel.find(
       buildRegexQuery(["name"])
     ).select("_id name avatar");
 
     const channelIds = matchedChannels.map((c) => c._id);
 
-    // STEP 3: Search Videos
+    /* ================= VIDEOS ================= */
     const videos = await Video.find({
       $or: [
-        buildRegexQuery(["title", "description", "tags"]),
+        buildRegexQuery(["title", "description"]),
+        { tags: { $elemMatch: { $regex: keyword, $options: "i" } } }, // ✅ FIX 3
         { channel: { $in: channelIds } },
       ],
     }).populate("channel comments.author comments.replies.author");
 
-    // STEP 4: Search Shorts
+    /* ================= SHORTS ================= */
     const shorts = await Short.find({
       $or: [
-        buildRegexQuery(["title","description", "tags"]),
+        buildRegexQuery(["title", "description"]),
+        { tags: { $elemMatch: { $regex: keyword, $options: "i" } } }, // ✅ FIX 3
         { channel: { $in: channelIds } },
       ],
     })
       .populate("channel", "name avatar")
       .populate("likes", "username photoUrl");
 
-    // STEP 5: Search Playlists
+    /* ================= PLAYLISTS ================= */
     const playlists = await Playlist.find({
       $or: [
         buildRegexQuery(["title", "description"]),
@@ -93,7 +93,7 @@ Your job:
       .populate("channel", "name avatar")
       .populate({
         path: "videos",
-        populate: { path: "channel", select: "name avatar " },
+        populate: { path: "channel", select: "name avatar" },
       });
 
     return res.status(200).json({
@@ -110,6 +110,8 @@ Your job:
     });
   }
 };
+
+/* ================= FILTER CATEGORY WITH AI ================= */
 export const filterCategoryWithAi = async (req, res) => {
   try {
     const { input } = req.body;
@@ -118,46 +120,38 @@ export const filterCategoryWithAi = async (req, res) => {
       return res.status(400).json({ message: "Search query is required" });
     }
 
-    // Initialize Gemini
     const ai = new GoogleGenAI({
       apiKey: process.env.GEMINI_API_KEY,
     });
 
     const categories = [
-      "Music", "Gaming", "Movies", "TV Shows", "News",
-      "Trending", "Entertainment", "Education", "Science & Tech",
-      "Travel", "Fashion", "Cooking", "Sports", "Pets",
-      "Art", "Comedy", "Vlogs"
+      "Music","Gaming","Movies","TV Shows","News","Trending",
+      "Entertainment","Education","Science & Tech","Travel",
+      "Fashion","Cooking","Sports","Pets","Art","Comedy","Vlogs"
     ];
 
     const prompt = `
-You are a category classifier for a video streaming platform.
-
-The user query is: "${input}"
-
-Your job:
-Match this query with the most relevant categories from this list:
+Match this query with the most relevant categories:
 ${categories.join(", ")}
 
--If more than one category fits, return them comma-separated.
--If nothing fits, return the single closest category.
+Query: "${input}"
+Return only category names (comma-separated)
+    `;
 
--Do NOT explain. Do NOT return JSON. Only return category names.
-    
-Examples:
--"arijit singh songs" → "Music"
--"pubg gameplay" → " Gaming" 
--"netflix web series" → "TV Shows"
--"india latest news" →" News"  
--"funny animal videos" → "Comedy, Pets" 
--"fitness tips" → "Education, Sports "
-`;
-const response = await ai.models.generateContent({
+    const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
     });
-    const keywordText = response.text.trim();
-    const keywords = keywordText.split(",").map(k => k.trim());
+
+    // ✅ FIX 4: Render-safe Gemini response
+    const aiText =
+      response?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    let keywords = aiText
+      ? aiText.split(",").map(k => k.trim()).filter(Boolean)
+      : [input];
+
+    if (!keywords.length) keywords = [input];
 
     const videoConditions = [];
     const shortConditions = [];
@@ -167,12 +161,12 @@ const response = await ai.models.generateContent({
       videoConditions.push(
         { title: { $regex: kw, $options: "i" } },
         { description: { $regex: kw, $options: "i" } },
-        { tags: { $regex: kw, $options: "i" } }
+        { tags: { $elemMatch: { $regex: kw, $options: "i" } } } // ✅ FIX 5
       );
 
       shortConditions.push(
         { title: { $regex: kw, $options: "i" } },
-        { tags: { $regex: kw, $options: "i" } }
+        { tags: { $elemMatch: { $regex: kw, $options: "i" } } } // ✅ FIX 5
       );
 
       channelConditions.push(
@@ -184,8 +178,7 @@ const response = await ai.models.generateContent({
 
     const videos = await Video.find({ $or: videoConditions })
       .populate("channel")
-      .populate("comments.author")
-      .populate("comments.replies.author");
+      .populate("comments.author comments.replies.author");
 
     const shorts = await Short.find({ $or: shortConditions })
       .populate("channel", "name avatar")
@@ -193,15 +186,7 @@ const response = await ai.models.generateContent({
 
     const channels = await Channel.find({ $or: channelConditions })
       .populate("owner", "username photoUrl")
-      .populate("subscribers", "username photoUrl")
-      .populate({
-        path: "videos",
-        populate: { path: "channel", select: "name avatar" },
-      })
-      .populate({
-        path: "shorts",
-        populate: { path: "channel", select: "name avatar" },
-      });
+      .populate("subscribers", "username photoUrl");
 
     return res.status(200).json({
       videos,
