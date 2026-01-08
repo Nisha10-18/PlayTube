@@ -68,5 +68,4 @@ This project reflects **hands-on full-stack development experience**, not just t
 
 ### Tools & Deployment
 - Git & GitHub
-- Render (Backend Deployment)
-- Vercel  (Frontend Deployment)
+- Render
