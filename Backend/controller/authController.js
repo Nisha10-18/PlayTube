@@ -189,7 +189,7 @@ export const sendOtp = async(req,res) => {
    }
    const otp = await Math.floor(1000 + Math.random()*9000).toString()
    user.resetOtp = otp
-   user.otpExpires = Date.now() + 5 * 60 * 1000,
+   user.otpExpires = Date.now() + 5 * 60 * 1000;
    user.isOtpVerified = false
 
    await user.save()
