@@ -283,7 +283,7 @@ const handleCategoryFilter = async (category) => {
 
       {/* Navbar */}
       <header
-        className="bg-[#0f0f0f] h-[60px] p-3 border-b border-gray-800 fixed top-0 left-0 right-0 z-50 
+        className="bg-[#0f0f0f] h-[60px] p-3 border-b border-gray-800 fixed top-0 left-0 right-0 z-50 hidden md:block
       "
       >
         <div className="hidden flex items-center justify-between h-full">
@@ -303,7 +303,8 @@ const handleCategoryFilter = async (category) => {
           </div>
 
           {/* Search */}
-          <div className="md:flex items-center gap-2 flex-1 max-w-xl mx-4">
+          <div className="hidden md:flex items-center gap-2 flex-1 max-w-xl mx-4 flex-nowrap">
+
             <div className="flex flex-1">
               <input
                 type="text"
