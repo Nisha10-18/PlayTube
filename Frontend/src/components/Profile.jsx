@@ -71,7 +71,7 @@ function Profile() {
                 <p className='text-sm text-gray-400'>{userData?.email}</p>
                 <p className='text-sm text-blue-400 cursor-pointer hover:underline'
                 onClick={()=>{userData?.channel ? navigate("/viewchannel") :navigate("/createchannel")}}>
-                    {userData?.channel ? "" : "Create Channel"}
+                    {userData?.channel ? "View Channel" : "Create Channel"}
                 </p>
             </div>
         </div>}
