@@ -358,10 +358,7 @@ const handleCategoryFilter = async (category) => {
               />
             )}
 
-           <FaSearch
-  className="text-lg md:hidden flex cursor-pointer"
-  onClick={() => setSearchPopup(true)}
-/>
+
 
           </div>
         </div>
