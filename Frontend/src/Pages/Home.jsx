@@ -357,10 +357,11 @@ const handleCategoryFilter = async (category) => {
               />
             )}
 
-            <FaSearch
-              className="text-lg md:hidden flex"
-              onClick={() => setSearchPopup(!searchPopup)}
-            />
+           <FaSearch
+  className="text-lg md:hidden flex cursor-pointer"
+  onClick={() => setSearchPopup(true)}
+/>
+
           </div>
         </div>
       </header>
@@ -488,10 +489,10 @@ const handleCategoryFilter = async (category) => {
       </aside>
 
       {/* Main Area */}
-      <main
-        className={`overflow-y-auto p-4 flex flex-col pb-16 transition-all duration-300
-        ${sidebarOpen ? "md:ml-60" : "md:ml-20"}`}
-      >
+    <main
+  className={`overflow-y-auto p-4 flex flex-col pb-16 pt-[60px] md:pt-0 transition-all duration-300
+  ${sidebarOpen ? "md:ml-60" : "md:ml-20"}`}
+>
         {location.pathname === "/" && (
           <>
             <div className="flex items-center gap-3 overflow-x-auto pt-2 mt-[60px]">
