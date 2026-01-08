@@ -284,7 +284,7 @@ const handleCategoryFilter = async (category) => {
       {/* Navbar */}
       <header
         className="bg-[#0f0f0f] h-[60px] p-3 border-b border-gray-800 fixed top-0 left-0 right-0 z-50
-      hidden md:block"
+      "
       >
         <div className="flex items-center justify-between h-full">
           {/* Left */}
